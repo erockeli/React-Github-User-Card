@@ -1,47 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import axios from 'axios';
+import Card from "./components/Card";
 
 class App extends React.Component {
+    constructor(){
+        super();
+        this.state = {
+            users: []
+        };
+    }
 
-  constructor(){
+    componentDidMount() {
+        this.fetchUser();
+    }
 
-    state ={
-    users:[],
-    followers:[]
-  }
+    fetchUser = () => {
+      axios
+          .get('https://api.github.com/users/erockeli')
+          .then(response => {
+              console.log(response);
+              this.setState({users: response.data});
+          })
+          .catch(err => console.log(err));
+    };
+
+    render() {
+     return(
+         <div className = "App">
+             <Card user = {this.state.users}/>
+         </div>
+     )
+    }
 }
 
-componentDidMount(){
-  axios.get(`https://api.github.com/users/erockeli/`)
-    .then( response => {
-      this.state({users:response.data})
-    })
-    .catch( err => console.log("Error in axios call", err))
-
-    axios.get(`https://api.github.com/users/erockeli/followers`)
-    .then( response => {
-      this.state({followers:response.data})
-    })
-    .catch( err => console.log("Error in axios call", err))
-
-
-
-
-}
-
-
-
-
-render(){
-
-  return(
-    <div>
-      <UserCard userinfo={this.state.users} followes={this.state.followers}/>
-
-    </div>
-
-  )
-}
-}
+export default App;
